@@ -69,7 +69,7 @@ module Wikipedia
         filtered = list.select {|i| i =~ /^file:.+\.(jpg|jpeg|png|gif)$/i && !i.include?("LinkFA-star") }
         image_pages = filtered.map do |title|
           image_page = Wikipedia.find_image( title, options )
-          puts image_page.inspect
+          #puts image_page.inspect
           image_page
         end
       else
