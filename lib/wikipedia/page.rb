@@ -48,13 +48,34 @@ module Wikipedia
       page['imageinfo'].first['url'] if page['imageinfo']
     end
 
-    def image_urls
+    def thumb_url
+      page['imageinfo'].first['thumburl'] if page['imageinfo']
+    end
+
+    # For all image options see: http://www.mediawiki.org/wiki/API:Properties#imageinfo_.2F_ii
+    # Ex:  page.image_urls(:iiurlheight => '200px')
+    def image_urls(options = {})
+      image_pages(options).map{|p| p.image_url }
+    end
+
+    # For all image options see: http://www.mediawiki.org/wiki/API:Properties#imageinfo_.2F_ii
+    # Ex:  page.thumb_urls(:iiurlwidth => '400px')
+    def thumb_urls(options = {})
+      image_pages(options).map{|p| p.thumb_url }
+    end
+
+    def image_pages(options = {})
       if list = images
         filtered = list.select {|i| i =~ /^file:.+\.(jpg|jpeg|png|gif)$/i && !i.include?("LinkFA-star") }
-        filtered.map do |title|
-          Wikipedia.find_image( title ).image_url
+        image_pages = filtered.map do |title|
+          image_page = Wikipedia.find_image( title, options )
+          puts image_page.inspect
+          image_page
         end
+      else
+        image_pages = []
       end
+      image_pages
     end
 
     def raw_data
